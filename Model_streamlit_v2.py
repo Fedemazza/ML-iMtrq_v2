@@ -49,9 +49,9 @@ df_search_bench = df_search_bench.set_index('Tipo Search')
 df_FB_bench = load_clients('fb_bench')
 df_FB_bench = df_FB_bench.set_index('Tipo FB')
 
-df_YT_bench = load_clients('YT_bench')
+df_YT_bench = load_clients('bench_yt')
 df_YT_bench = df_YT_bench.set_index('Tipo YT')
-
+st.write(df_YT_bench)
 
 
 
