@@ -51,7 +51,7 @@ df_FB_bench = df_FB_bench.set_index('Tipo FB')
 
 df_YT_bench = load_clients('bench_yt')
 df_YT_bench = df_YT_bench.set_index('Tipo YT')
-st.write(df_YT_bench)
+
 
 
 
