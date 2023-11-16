@@ -42,7 +42,7 @@ def load_clients(df_in):
     df = pd.read_csv(df_in+'.csv')
     return df
 
-df_clients = load_clients('Clients')
+#df_clients = load_clients('Clients')
 df_search_bench = load_clients('search_bench')
 df_search_bench = df_search_bench.set_index('Tipo Search')
 
