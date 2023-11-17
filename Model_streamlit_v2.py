@@ -38,6 +38,11 @@ def load_data(df_in):
 # Cargar los datos
 df = load_data('df_histo')
 
+df_cpv = df.copy()
+df_cpv = df_cpv[df_cpv['CPV']>0]
+df_cpv = df_cpv[df_cpv['CPV']<2]
+
+
 def load_clients(df_in):
     df = pd.read_csv(df_in+'.csv')
     return df
@@ -236,7 +241,7 @@ if st.button('Hacer predicción'):
     if Format_New == 'Video':
         st.write('CPV')
         st.write(round(pred_CPV,3))
-        st.altair_chart(histo(df,'CPV',pred_CPV,bins=bin_density*5), use_container_width=False, theme=None)
+        st.altair_chart(histo(df_cpv,'CPV',pred_CPV,bins=bin_density*5), use_container_width=False, theme=None)
         
 else:
     st.write('Prepara tu predicción')
