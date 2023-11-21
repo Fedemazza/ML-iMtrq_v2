@@ -5,30 +5,51 @@ import joblib
 import numpy as np
 import altair as alt
 
+#Cargar los files a la carpeta: 
+# model_rf_CPC_v3, model_xgboost_CPC_v3, model_NN_CPC_v3, scaler_model_CPC_v3, pca_model_CPC_v3, scaler_NN_model_CPC_v3
+# model_rf_CPM_v3, model_xgboost_CPM_v3, model_NN_CPM_v3, scaler_model_CPM_v3, pca_model_CPM_v3, scaler_NN_model_CPMC_v3
+# model_rf_CTR_v3, model_xgboost_CTR_v3, model_NN_CTR_v3, scaler_model_CTR_v3, pca_model_CTR_v3, scaler_NN_model_CTR_v3
+# model_rf_CPV_v3, model_xgboost_CPV_v3, model_NN_CPV_v3, scaler_model_CPV_v3, pca_model_CPV_v3, scaler_NN_model_CPV_v3
+# search_bench.csv, fb_bench.csv, bench_yt.csv, df_histo.csv
+# requirements.txt
+
+
 st.title('Uso del modelo')
 
+version = '3'
+
 # Cargar los modelos desde los archivos
+RF_CPC =  joblib.load("model_rf_CPC_v"+version+".joblib")
 xgboost_CPC = xgb.XGBRegressor()
-xgboost_CPC.load_model("model_xgboost_CPC_v2.json")
+xgboost_CPC.load_model("model_xgboost_CPC_v"+version+".json")
+NN_CPC = joblib.load("model_NN_CPC_v"+version+".joblib")
+loaded_scaler_CPC = joblib.load('scaler_model_CPC_v'+version+'.joblib')
+loaded_pca_CPC = joblib.load('pca_model_CPC_v'+version+'.joblib')
+loaded_scaler_NN_CPC = joblib.load('scaler_NN_model_CPC_v'+version+'.joblib')
 
+RF_CPM =  joblib.load("model_rf_CPM_v"+version+".joblib")
 xgboost_CPM = xgb.XGBRegressor()
-xgboost_CPM.load_model("model_xgboost_CPM_v2.json")
+xgboost_CPM.load_model("model_xgboost_CPM_v"+version+".json")
+NN_CPM = joblib.load("model_NN_CPM_v"+version+".joblib")
+loaded_scaler_CPM = joblib.load('scaler_model_CPM_v'+version+'.joblib')
+loaded_pca_CPM = joblib.load('pca_model_CPM_v'+version+'.joblib')
+loaded_scaler_NN_CPM = joblib.load('scaler_NN_model_CPM_v'+version+'.joblib')
 
+RF_CTR =  joblib.load("model_rf_CTR_v"+version+".joblib")
 xgboost_CTR = xgb.XGBRegressor()
-xgboost_CTR.load_model("model_xgboost_CTR_v2.json")
+xgboost_CTR.load_model("model_xgboost_CTR_v"+version+".json")
+NN_CTR = joblib.load("model_NN_CTR_v"+version+".joblib")
+loaded_scaler_CTR = joblib.load('scaler_model_CTR_v'+version+'.joblib')
+loaded_pca_CTR = joblib.load('pca_model_CTR_v'+version+'.joblib')
+loaded_scaler_NN_CTR = joblib.load('scaler_NN_model_CTR_v'+version+'.joblib')
 
-rf_CPV = joblib.load("model_rf_CPV_v2.joblib")
-
-
-# Cargar el scaler desde el archivo
-loaded_scaler = joblib.load('scaler_model_v2.joblib')
-# Cargar el pca desde el archivo
-loaded_pca = joblib.load('pca_model_v2.joblib')
-
-# Cargar el scaler desde el archivo
-loaded_scaler_CPV = joblib.load('scaler_model_CPV_v2.joblib')
-# Cargar el pca desde el archivo
-loaded_pca_CPV = joblib.load('pca_model_CPV_v2.joblib')
+RF_CPV =  joblib.load("model_rf_CPV_v"+version+".joblib")
+xgboost_CPV = xgb.XGBRegressor()
+xgboost_CPV.load_model("model_xgboost_CPV_v"+version+".json")
+NN_CPV = joblib.load("model_NN_CPV_v"+version+".joblib")
+loaded_scaler_CPV = joblib.load('scaler_model_CPV_v'+version+'.joblib')
+loaded_pca_CPV = joblib.load('pca_model_CPV_v'+version+'.joblib')
+loaded_scaler_NN_CPV = joblib.load('scaler_NN_model_CPV_v'+version+'.joblib')
 
 def load_data(df_in):
     df = pd.read_csv(df_in+'.csv')
@@ -83,25 +104,25 @@ with st.sidebar:
     Media_type = st.selectbox(    'Media_type',    (['Search','Social', 'Unknown', 'Display']))
     Traffic_source = st.selectbox(    'Traffic_source',    (['Google','Facebook',  'Other', 'LinkedIn']))
     dict_client = {'HN': 'Hughesnet', 'BR': 'Braun', 'EP': 'Enterprise', 'QQ':'QuickQuack', 'CJ':'ChefJames','OG':'OldGlory', 'AV':'AOV','Nuevo':'Nuevo'}
+
+
     
     Tipo_Search = st.selectbox(    'Industria_A',    (["Home - Home Improvement", "Animals - Pets",    "Apparel - Fashion",    "Arts - Entertainment",    "Attorneys - Legal Services",    "Automotive - For sale",
                                                        "Automotive - Repair, Service and Parts",    "Beauty - Personal Care",    "Business Services",    "Career - Employment",
                                                        "Dentists - Dental Services",    "Education - Instruction",    "Finance - Insurance",    "Furniture",    "Health - Fitness",
                                                        "Industrial - Commercial",    "Personal Services",    "Physicians - Surgeons",    "Real Estate",
                                                        "Restaurants - Food",    "Shopping, Collectibles and gifts",    "Sports and Recreation", "Travel",    "Ninguna de las anteriores"     ]))
+   
     Tipo_FB = st.selectbox(    'Industria_B',([  'Consumer Services',   'Apparel',    'Automotive',    'Beauty',       'Education',    'Employment & Job Training',    'Finance & Insurance',
                                                        "Fitness",    "Home Improvement",    "Healthcare",    "Industrial Services",    "Legal",    "Real Estate",    "Retail",    "Technology",
                                                        "Travel & Hospitality",    "Ninguna de las anteriores" ]))
-
-
-
-
-
+   
     Tipo_YT = st.selectbox(    'Industria_C',    ([ "Telecommunications",    "Education",    "Fashion",       "Healthcare & Insurance",    "Household Appliances",
                                                            "Entertainment",    "Restaurants",    "Government & Advocacy",    "Health & Beauty",    "Travel",    "Business & Finance",
                                                            "Science & Technology",    "Automotive",    "Electronics",    "Home & Garden",    "Retail",    "Ninguna de las anteriores"]))
-                           
-    Client = st.selectbox(    'Client',    (['HN', 'BR', 'EP', 'QQ', 'CJ','OG', 'AV','Nuevo'])) #['Hughesnet', 'Braun', 'Enterprise', 'QuickQuack', 'ChefJames','OldGlory', 'AOV']
+
+    
+    Client = st.selectbox(    'Client',    (['BR','HN',  'EP', 'QQ', 'CJ','OG', 'AV','Nuevo'])) #['Hughesnet', 'Braun', 'Enterprise', 'QuickQuack', 'ChefJames','OldGlory', 'AOV']
     Client = dict_client[Client]
     Format_New = st.selectbox(    'Format_New',    (['Display', 'Video']))
     Platform = st.selectbox(    'Platform',    (['Google Ads','Search','Facebook&Instagram', 'Discovery', 'Facebook', 'Performance Max','NoPlatform',  'Facebook & Instagram', 'Programmatic','Google Ads Search', 'LinkedIn','Google Ads Display', 'Google Ads  PMAX']))
@@ -159,20 +180,11 @@ with st.sidebar:
     # Asegurarte de que 'new_data_encoded' tenga las mismas columnas que se utilizaron durante el entrenamiento
     for col in variables_modelo:
         if col not in X.columns:
-            X[col] = False  # Agregar la columna faltante con valores predeterminados si es necesario
+            X[col] = False  # Agregar la columna faltante con valores predeterminados si es necesario  
 
-    
-    X_Scaled = loaded_scaler.transform(X[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
-                                          'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
-                                          'Bench GralFB CR', 'Bench FB AvgCR',       'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
-    X_pca = loaded_pca.transform(X_Scaled)
-    X_pca = pd.DataFrame(X_pca)
-    X['X_pca_0'] = X_pca[0]
-    X['X_pca_1'] = X_pca[1]
-
-    # Me aseguro de que mi nuevo dato tiene las mismas variables y el mismo orden que la data con la que fue entrenado el modelo
     X = X[variables_modelo]
-    X.columns = X.columns.astype(str)
+    X.columns = [str(i) for i in X.columns]
+
 
 def prediccion_modelo(modelo,X):
     return modelo.predict(X)
@@ -181,32 +193,8 @@ bin_density = st.slider('Bins', min_value=250, max_value=350, step=5, value=300)
 
 st.button("Reset", type="primary")
 if st.button('Hacer predicción'):
-    pred_CPC = prediccion_modelo(xgboost_CPC,X)[0]
-    pred_CPM = prediccion_modelo(xgboost_CPM,X)[0] 
-    pred_CTR = prediccion_modelo(xgboost_CTR,X)[0]
 
-    #CPV
-    for col in rf_CPV.feature_names_in_:
-        if col not in X.columns:
-            X[col] = False  # Agregar la columna faltante con valores predeterminados si es necesario
-            print(col)
 
-    
-    
-    X_Scaled = loaded_scaler_CPV.transform(X[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
-                                          'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
-                                          'Bench GralFB CR', 'Bench FB AvgCR',       'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
-    X_pca = loaded_pca_CPV.transform(X_Scaled)
-    X_pca = pd.DataFrame(X_pca)
-    X['X_pca_0'] = X_pca[0]
-    X['X_pca_1'] = X_pca[1]
-    
-    X = X[rf_CPV.feature_names_in_]
-    X.columns = [str(i) for i in X.columns]
-
-    
-    
-    pred_CPV = prediccion_modelo(rf_CPV,X)[0]
 
     def histo(df,metrica,valor,bins=bin_density):
         chart = alt.Chart(df).mark_bar(
@@ -225,23 +213,188 @@ if st.button('Hacer predicción'):
     size=alt.value(2)  # Grosor de la línea
 )
         return chart + linea_valor
+
     
+    
+    
+        
+    X_CPC = X.copy()
+    X_CPM = X.copy()
+    X_CTR = X.copy()
+    X_CPV = X.copy()
+    
+
+
+### CPC
+
+
+
+
+    
+    X_Scaled = loaded_scaler_CPC.transform(X_CPC[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
+                                          'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
+                                          'Bench GralFB CR', 'Bench FB AvgCR',       'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
+    X_pca = loaded_pca_CPC.transform(X_Scaled)
+    X_pca = pd.DataFrame(X_pca)
+    X_CPC['X_pca_0'] = X_pca[0]
+    X_CPC['X_pca_1'] = X_pca[1]
+
+    X_NN_CPC = loaded_scaler_NN_CPC.transform(X_CPC)
+  
+    
+    pred_CPC = (  prediccion_modelo(xgboost_CPC,X_CPC)[0] + prediccion_modelo(NN_CPC,X_NN_CPC)[0] + prediccion_modelo(RF_CPC,X_CPC)[0] ) / 3
+
     st.write('CPC')
+    #st.write('XGBoost')
+    #st.write(prediccion_modelo(xgboost_CPC,X_CPC)[0])
+    #st.write('Redes Neuronales')
+    #st.write(prediccion_modelo(NN_CPC,X_NN_CPC)[0])
+    #st.write('Random Forest')
+    #st.write(prediccion_modelo(RF_CPC,X_CPC)[0])     
+    #st.write('Ensamble')
     st.write(round(pred_CPC,3))
     st.altair_chart(histo(df,'CPC',pred_CPC), use_container_width=False, theme=None)
+
+
+
+
+
+
+
+
+
+### CPM
+
+
+
+
+
+
+
     
+
+    X_Scaled = loaded_scaler_CPM.transform(X_CPM[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
+                                          'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
+                                          'Bench GralFB CR', 'Bench FB AvgCR',       'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
+    X_pca = loaded_pca_CPM.transform(X_Scaled)
+    X_pca = pd.DataFrame(X_pca)
+    X_CPM['X_pca_0'] = X_pca[0]
+    X_CPM['X_pca_1'] = X_pca[1]    
+
+
+    X_NN_CPM = loaded_scaler_NN_CPM.transform(X_CPM)
+    
+    pred_CPM = (  prediccion_modelo(xgboost_CPM,X_CPM)[0] + prediccion_modelo(NN_CPM,X_NN_CPM)[0] + prediccion_modelo(RF_CPM,X_CPM)[0] ) / 3
+
+
     st.write('CPM')
+    #st.write('XGBoost')
+    #st.write(prediccion_modelo(xgboost_CPM,X_CPM)[0])
+   # st.write('Redes Neuronales')
+   # st.write(prediccion_modelo(NN_CPM,X_NN_CPM)[0])
+    #st.write('Random Forest')
+    #st.write(prediccion_modelo(RF_CPM,X_CPM)[0])     
+    #st.write('Ensamble')
     st.write(round(pred_CPM,3))
     st.altair_chart(histo(df,'CPM',pred_CPM), use_container_width=False, theme=None)
+
+
+
+
+
+
+
+
+
+
+### CTR
+
+
+
+
+
     
+
+
+    X_Scaled = loaded_scaler_CTR.transform(X_CTR[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
+                                      'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
+                                      'Bench GralFB CR', 'Bench FB AvgCR',       'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
+    X_pca = loaded_pca_CTR.transform(X_Scaled)
+    X_pca = pd.DataFrame(X_pca)
+    X_CTR['X_pca_0'] = X_pca[0]
+    X_CTR['X_pca_1'] = X_pca[1]
+
+
+    X_NN_CTR = loaded_scaler_NN_CTR.transform(X_CTR)
+    
+    pred_CTR = (  prediccion_modelo(xgboost_CTR,X_CTR)[0] + prediccion_modelo(NN_CTR,X_NN_CTR)[0] + prediccion_modelo(RF_CTR,X_CTR)[0] ) / 3
+
     st.write('CTR')
+    #st.write('XGBoost')
+    #st.write(prediccion_modelo(xgboost_CTR,X_CTR)[0])
+    #st.write('Redes Neuronales')
+    #st.write(prediccion_modelo(NN_CTR,X_NN_CTR)[0])
+    #st.write('Random Forest')
+    #st.write(prediccion_modelo(RF_CTR,X_CTR)[0])     
+    #st.write('Ensamble')
     st.write(round(pred_CTR,3))
     st.altair_chart(histo(df,'CTR',pred_CTR), use_container_width=False, theme=None)
 
+
+
+
+
+    
+#CPV
+    X_CPV = X_CPV[loaded_scaler_NN_CPV.feature_names_in_]
+    for col in RF_CPV.feature_names_in_:
+        if col not in X_CPV.columns:
+            X_CPV[col] = False  # Agregar la columna faltante con valores predeterminados si es necesario
+            print(col)
+
+
+   
+    
+    X_Scaled = loaded_scaler_CPV.transform(X_CPV[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
+                                          'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
+                                          'Bench GralFB CR', 'Bench FB AvgCR', 'Bench GralYT CPV', 'Bench YT CPV', 'Bench GralYT CTR', 'Bench YT CTR','Bench GralYT VR', 'Bench FB AvgVR']])
+    X_pca = loaded_pca_CPV.transform(X_Scaled)
+    X_pca = pd.DataFrame(X_pca)
+    X_CPV['X_pca_0'] = X_pca[0]
+    X_CPV['X_pca_1'] = X_pca[1]
+
+    X_CPV = X_CPV[loaded_scaler_NN_CPV.feature_names_in_]
+    #X_CPV = X_CPV[RF_CPV.feature_names_in_]
+    X_CPV.columns = [str(i) for i in X_CPV.columns]
+ 
+    X_NN_CPV = loaded_scaler_NN_CPV.transform(X_CPV)
+
     if Format_New == 'Video':
         st.write('CPV')
+        #st.write('XGBoost')
+        #st.write(prediccion_modelo(xgboost_CPV,X_CPV)[0])
+        #st.write('Redes Neuronales')
+        #st.write(prediccion_modelo(NN_CPV,X_NN_CPV)[0])
+        #st.write('Random Forest')
+        #st.write(prediccion_modelo(RF_CPV,X_CPV)[0])     
+        
+        pred_RF_CPV = prediccion_modelo(RF_CPV,X_CPV)[0]
+        pred_XGB_CPV = prediccion_modelo(xgboost_CPV,X_CPV)[0]
+        pred_NN_CPV = prediccion_modelo(NN_CPV,X_NN_CPV)[0]
+        if pred_NN_CPV > 3:
+                pred_NN_CPV = (pred_RF_CPV + pred_XGB_CPV)/2
+        elif pred_NN_CPV < 0:
+                pred_NN_CPV = (pred_RF_CPV + pred_XGB_CPV)/2
+        
+        pred_CPV = (  pred_XGB_CPV + pred_NN_CPV + pred_RF_CPV ) / 3
+        #st.write('Ensamble')
         st.write(round(pred_CPV,3))
-        st.altair_chart(histo(df_cpv,'CPV',pred_CPV,bins=bin_density*5), use_container_width=False, theme=None)
+        st.altair_chart(histo(df_cpv,'CPV',pred_CPV), use_container_width=False, theme=None)
+
+    st.write(X_NN_CPV)
+    st.write(sum(sum(X_NN_CPV)))
+    st.write(X_CPV)
+
         
 else:
     st.write('Prepara tu predicción')
