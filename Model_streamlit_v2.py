@@ -391,9 +391,7 @@ if st.button('Hacer predicción'):
         st.write(round(pred_CPV,3))
         st.altair_chart(histo(df_cpv,'CPV',pred_CPV), use_container_width=False, theme=None)
 
-    st.write(X_NN_CPV)
-    st.write(sum(sum(X_NN_CPV)))
-    st.write(X_CPV)
+
 
         
 else:
