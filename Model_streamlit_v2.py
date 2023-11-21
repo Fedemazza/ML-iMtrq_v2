@@ -196,7 +196,7 @@ if st.button('Hacer predicción'):
 
 
 
-    def histo(df,metrica,valor,bins=bin_density):
+    def histo(df,metrica,valor,bins=bin_density, intervalo = 0):
         chart = alt.Chart(df).mark_bar(
         opacity=0.3,
         binSpacing=0
@@ -210,9 +210,18 @@ if st.button('Hacer predicción'):
 
         linea_valor = alt.Chart(pd.DataFrame({'valor_linea': [valor]})).mark_rule(color='red').encode(
     x='valor_linea:Q',
-    size=alt.value(2)  # Grosor de la línea
-)
-        return chart + linea_valor
+    size=alt.value(2))  # Grosor de la línea)
+
+        linea1 = alt.Chart(pd.DataFrame({'valor_linea': [max(valor - intervalo,0)]})).mark_rule(color='pink').encode(
+            x='valor_linea:Q',
+            size=alt.value(2))  # Grosor de la línea)
+
+        linea2 = alt.Chart(pd.DataFrame({'valor_linea': [valor + intervalo]})).mark_rule(color='pink').encode(
+            x='valor_linea:Q',
+            size=alt.value(2))  # Grosor de la línea)
+
+       
+        return chart + linea_valor + linea1 + linea2
 
     
     
@@ -228,7 +237,7 @@ if st.button('Hacer predicción'):
 ### CPC
 
 
-
+    intervalo = 0.258
 
     
     X_Scaled = loaded_scaler_CPC.transform(X_CPC[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
@@ -253,7 +262,8 @@ if st.button('Hacer predicción'):
     #st.write(prediccion_modelo(RF_CPC,X_CPC)[0])     
     #st.write('Ensamble')
     st.write(round(pred_CPC,3))
-    st.altair_chart(histo(df,'CPC',pred_CPC), use_container_width=False, theme=None)
+    st.write('En el  Intervalo: ['+str(round(max(0,pred_CPC-intervalo),3))+' - '+str(round(pred_CPC+intervalo,3))+'] con un nivel de confianza del 85%')
+    st.altair_chart(histo(df,'CPC',pred_CPC, intervalo = intervalo), use_container_width=False, theme=None)
 
 
 
@@ -271,7 +281,7 @@ if st.button('Hacer predicción'):
 
 
 
-    
+    intervalo = 54
 
     X_Scaled = loaded_scaler_CPM.transform(X_CPM[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
                                           'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
@@ -296,7 +306,8 @@ if st.button('Hacer predicción'):
     #st.write(prediccion_modelo(RF_CPM,X_CPM)[0])     
     #st.write('Ensamble')
     st.write(round(pred_CPM,3))
-    st.altair_chart(histo(df,'CPM',pred_CPM), use_container_width=False, theme=None)
+    st.write('En el  Intervalo: ['+str(round(max(0,pred_CPM-intervalo),3))+' - '+str(round(pred_CPM+intervalo,3))+'] con un nivel de confianza del 85%')
+    st.altair_chart(histo(df,'CPM',pred_CPM, intervalo = intervalo), use_container_width=False, theme=None)
 
 
 
@@ -314,7 +325,7 @@ if st.button('Hacer predicción'):
 
 
     
-
+    intervalo = 0.0568
 
     X_Scaled = loaded_scaler_CTR.transform(X_CTR[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
                                       'Bench Search AvgCR','Bench GralFB CPC', 'Bench FB CPC','Bench GralFB CPAction', 'Bench FB CPAction', 'Bench GralFB CTR','Bench FB CTR',
@@ -338,7 +349,8 @@ if st.button('Hacer predicción'):
     #st.write(prediccion_modelo(RF_CTR,X_CTR)[0])     
     #st.write('Ensamble')
     st.write(round(pred_CTR,3))
-    st.altair_chart(histo(df,'CTR',pred_CTR), use_container_width=False, theme=None)
+    st.write('En el  Intervalo: ['+str(round(max(0,pred_CTR-intervalo),3))+' - '+str(round(pred_CTR+intervalo,3))+'] con un nivel de confianza del 85%')
+    st.altair_chart(histo(df,'CTR',pred_CTR, intervalo = intervalo), use_container_width=False, theme=None)
 
 
 
@@ -352,7 +364,7 @@ if st.button('Hacer predicción'):
             X_CPV[col] = False  # Agregar la columna faltante con valores predeterminados si es necesario
             print(col)
 
-
+    intervalo = 12.8
    
     
     X_Scaled = loaded_scaler_CPV.transform(X_CPV[['Año','Mes','Cost','Bench Gral CPC','Bench Search CPC', 'Bench GralSch CPL', 'Bench Search CPL','Bench GralSch CTR', 'Bench Search CTR', 'Bench GralSch CR',
@@ -389,7 +401,8 @@ if st.button('Hacer predicción'):
         pred_CPV = (  pred_XGB_CPV + pred_NN_CPV + pred_RF_CPV ) / 3
         #st.write('Ensamble')
         st.write(round(pred_CPV,3))
-        st.altair_chart(histo(df_cpv,'CPV',pred_CPV), use_container_width=False, theme=None)
+        st.write('En el  Intervalo: ['+str(round(max(0,pred_CPV-intervalo),3))+' - '+str(round(pred_CPV+intervalo,3))+'] con un nivel de confianza del 85%')
+        st.altair_chart(histo(df_cpv,'CPV',pred_CPV, intervalo = intervalo), use_container_width=False, theme=None)
 
 
 
